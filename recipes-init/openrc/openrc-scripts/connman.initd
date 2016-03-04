@@ -1,0 +1,27 @@
+#!/sbin/runscript
+
+depend() {
+	need dbus
+	provide net
+}
+
+start() {
+	ebegin "Starting Connection Manager"
+	start-stop-daemon \
+		--start \
+		--quiet \
+		--exec /usr/sbin/connmand \
+			-- ${CONNMAN_OPTS}
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping Connection Manager"
+	start-stop-daemon \
+		--stop \
+		--quiet \
+		--exec /usr/sbin/connmand
+	eend $?
+}
+
+# vim: noet

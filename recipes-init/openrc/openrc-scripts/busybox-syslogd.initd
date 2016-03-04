@@ -1,0 +1,29 @@
+#!/sbin/runscript
+
+depend() {
+	use clock
+	need hostname localmount
+	after bootmisc
+	provide logger
+}
+
+start() {
+	ebegin "Starting Busybox syslogd"
+	start-stop-daemon \
+		--start \
+		--quiet \
+		--exec /sbin/syslogd \
+			-- ${SYSLOGD_OPTS}
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping Busybox syslogd"
+	start-stop-daemon \
+		--stop \
+		--quiet \
+		--exec /sbin/syslogd
+	eend $?
+}
+
+# vim: noet
