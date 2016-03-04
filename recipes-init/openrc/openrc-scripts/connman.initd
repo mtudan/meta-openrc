@@ -1,27 +1,12 @@
-#!/sbin/runscript
+#!/sbin/openrc-run
 
 depend() {
 	need dbus
 	provide net
 }
 
-start() {
-	ebegin "Starting Connection Manager"
-	start-stop-daemon \
-		--start \
-		--quiet \
-		--exec /usr/sbin/connmand \
-			-- ${CONNMAN_OPTS}
-	eend $?
-}
+command_args="${CONNMAN_OPTS}"
+description="connection manager"
+command="/usr/sbin/connmand"
 
-stop() {
-	ebegin "Stopping Connection Manager"
-	start-stop-daemon \
-		--stop \
-		--quiet \
-		--exec /usr/sbin/connmand
-	eend $?
-}
-
-# vim: noet
+# vim: noet ft=gentoo-init-d

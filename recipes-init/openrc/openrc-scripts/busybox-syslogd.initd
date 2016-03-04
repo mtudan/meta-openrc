@@ -1,4 +1,4 @@
-#!/sbin/runscript
+#!/sbin/openrc-run
 
 depend() {
 	use clock
@@ -7,23 +7,8 @@ depend() {
 	provide logger
 }
 
-start() {
-	ebegin "Starting Busybox syslogd"
-	start-stop-daemon \
-		--start \
-		--quiet \
-		--exec /sbin/syslogd \
-			-- ${SYSLOGD_OPTS}
-	eend $?
-}
+command_args="${SYSLOGD_OPTS}"
+description="busybox system logger"
+command="/sbin/syslogd"
 
-stop() {
-	ebegin "Stopping Busybox syslogd"
-	start-stop-daemon \
-		--stop \
-		--quiet \
-		--exec /sbin/syslogd
-	eend $?
-}
-
-# vim: noet
+# vim: noet ft=gentoo-init-d
