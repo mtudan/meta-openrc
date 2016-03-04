@@ -1,14 +1,13 @@
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
-#FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
-
 SRC_URI = " \
     file://busybox-syslogd.initd \
     file://busybox-syslogd.confd \
     file://connman.initd \
     file://connman.confd \
     file://dbus.initd \
+    file://sshd.initd \
     file://udev.initd \
 "
 
@@ -17,6 +16,7 @@ SERVICES = " \
     busybox-syslogd \
     connman \
     dbus \
+    sshd \
     udev \
 "
 
@@ -24,6 +24,7 @@ SERVICES = " \
 DEFAULT_SERVICES = " \
     busybox-syslogd \
     connman \
+    sshd \
     udev \
 "
 
