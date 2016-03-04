@@ -30,6 +30,8 @@ DEFAULT_SERVICES = " \
 
 S="${WORKDIR}"
 
+inherit openrc
+
 do_compile() {
     :
 }
@@ -39,7 +41,7 @@ do_install() {
     install -d -m 755 ${D}${OPENRC_CONFDIR}
 
     for svc in ${SERVICES}; do
-        install -m 755 ${svc}.initd ${D}${OPENRC_INITDIR}/${svc}
+        openrc_install_script ${svc}.initd
 
         if [ -f ${svc}.confd ]; then
             install -m 644 ${svc}.confd ${D}${OPENRC_CONFDIR}/${svc}
@@ -48,7 +50,7 @@ do_install() {
 
     install -d -m 755 ${D}${sysconfdir}/runlevels/default
     for svc in ${DEFAULT_SERVICES}; do
-        ln -s ${OPENRC_INITDIR}/${svc} ${D}${sysconfdir}/runlevels/default
+        openrc_add_to_default_runlevel ${svc}
     done
 }
 
