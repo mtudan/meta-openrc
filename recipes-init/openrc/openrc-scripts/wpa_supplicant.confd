@@ -1,0 +1,11 @@
+# CONFIG_PATH="/etc/wpa_supplicant.conf"
+
+# Any extra arguments to pass to the daemon aside from the config
+# path and -B (background mode)
+#
+# -u : Enable dbus by default for operation with connman
+#      If this is not enabled, you need to pass the appropriate
+#      interface(s) with -i <interface>
+EXTRA_ARGS="-u"
+
+

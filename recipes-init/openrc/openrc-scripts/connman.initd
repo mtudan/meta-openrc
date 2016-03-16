@@ -3,6 +3,7 @@
 depend() {
 	need dbus
 	provide net
+	after wpa_supplicant
 }
 
 command_args="${CONNMAN_OPTS}"

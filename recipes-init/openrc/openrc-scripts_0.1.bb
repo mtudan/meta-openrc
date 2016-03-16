@@ -11,6 +11,8 @@ SRC_URI = " \
     file://dbus.initd \
     file://sshd.initd \
     file://udev.initd \
+    file://wpa_supplicant.initd \
+    file://wpa_supplicant.confd \
 "
 
 # List of services to install
@@ -21,6 +23,7 @@ SERVICES = " \
     dbus \
     sshd \
     udev \
+    wpa_supplicant \
 "
 
 # List of services to add to the default runlevel
@@ -30,6 +33,7 @@ DEFAULT_SERVICES = " \
     connman \
     sshd \
     udev \
+    wpa_supplicant \
 "
 
 S="${WORKDIR}"
