@@ -8,11 +8,24 @@ depend() {
 
 command_args="--daemon"
 description="udev daemon"
-command="/lib/udev/udevd"
+command=""
 
 start_pre() {
+	local p
+
 	if [ -e /proc/sys/kernel/hotplug ]; then
 		echo "" >/proc/sys/kernel/hotplug
+	fi
+
+	for	p in /lib/udev/udevd /lib/systemd/systemd-udevd /sbin/udevd; do
+		if [ -x ${p} ]; then
+			command=${p}
+		fi
+	done
+
+	if [ -z "${command}" ]; then
+		eerror "Failed to find udevd executable"
+		return 1
 	fi
 
 	return 0
