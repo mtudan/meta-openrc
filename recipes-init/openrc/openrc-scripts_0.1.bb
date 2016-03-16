@@ -2,6 +2,8 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
 SRC_URI = " \
+    file://busybox-klogd.initd \
+    file://busybox-klogd.confd \
     file://busybox-syslogd.initd \
     file://busybox-syslogd.confd \
     file://connman.initd \
@@ -13,6 +15,7 @@ SRC_URI = " \
 
 # List of services to install
 SERVICES = " \
+    busybox-klogd \
     busybox-syslogd \
     connman \
     dbus \
@@ -22,6 +25,7 @@ SERVICES = " \
 
 # List of services to add to the default runlevel
 DEFAULT_SERVICES = " \
+    busybox-klogd \
     busybox-syslogd \
     connman \
     sshd \
