@@ -3,6 +3,8 @@ OPENRC_PACKAGES ?= "${PN}"
 OPENRC_ADD_DEFAULT ?= ""
 
 openrc_install_script() {
+    local svc
+
     [ ! -d ${D}${OPENRC_INITDIR} ] && install -d ${D}${OPENRC_INITDIR}
 
     for svc in $*; do
@@ -11,6 +13,8 @@ openrc_install_script() {
 }
 
 openrc_add_to_default_runlevel() {
+    local svc
+
     [ ! -d ${D}${sysconfdir}/runlevels/default ] \
         && install -d ${D}${sysconfdir}/runlevels/default
 

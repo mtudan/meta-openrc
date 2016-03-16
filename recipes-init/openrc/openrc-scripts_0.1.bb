@@ -41,6 +41,8 @@ do_compile() {
 }
 
 do_install() {
+    local svc
+
     install -d -m 755 ${D}${OPENRC_INITDIR}
     install -d -m 755 ${D}${OPENRC_CONFDIR}
 
