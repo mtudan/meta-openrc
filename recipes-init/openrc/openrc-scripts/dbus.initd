@@ -13,6 +13,7 @@ description_reload="Reload dbus"
 
 start_pre() {
 	[ ! -d /var/run/dbus ] && mkdir -p /var/run/dbus
+	[ ! -f /etc/machine-id ] && dbus-uuidgen > /etc/machine-id
 	return 0
 }
 
