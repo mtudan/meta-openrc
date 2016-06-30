@@ -12,14 +12,27 @@ openrc_install_script() {
     done
 }
 
-openrc_add_to_default_runlevel() {
+_add_to_runlevel() {
+    local runlevel=$1
     local svc
 
-    [ ! -d ${D}${sysconfdir}/runlevels/default ] \
-        && install -d ${D}${sysconfdir}/runlevels/default
+    shift
+
+    [ ! -d ${D}${sysconfdir}/runlevels/${runlevel} ] \
+        && install -d ${D}${sysconfdir}/runlevels/${runlevel}
 
     for svc in $*; do
-        ln -s ${OPENRC_INITDIR}/${svc} ${D}${sysconfdir}/runlevels/default
+        ln -s ${OPENRC_INITDIR}/${svc} ${D}${sysconfdir}/runlevels/${runlevel}
     done
+
 }
+
+openrc_add_to_default_runlevel() {
+    _add_to_runlevel default $*
+}
+
+openrc_add_to_boot_runlevel() {
+    _add_to_runlevel boot $*
+}
+
 
