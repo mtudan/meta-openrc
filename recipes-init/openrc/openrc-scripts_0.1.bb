@@ -28,16 +28,6 @@ SERVICES = " \
     wpa_supplicant \
 "
 
-# List of services to add to the default runlevel
-DEFAULT_SERVICES = " \
-    busybox-klogd \
-    busybox-syslogd \
-    connman \
-    sshd \
-    udev \
-    wpa_supplicant \
-"
-
 S="${WORKDIR}"
 
 inherit openrc
@@ -61,9 +51,6 @@ do_install() {
     done
 
     install -d -m 755 ${D}${sysconfdir}/runlevels/default
-    for svc in ${DEFAULT_SERVICES}; do
-        openrc_add_to_default_runlevel ${svc}
-    done
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
