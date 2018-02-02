@@ -11,6 +11,7 @@ SRC_URI = " \
     file://connman.initd \
     file://connman.confd \
     file://dbus.initd \
+    file://dhcpcd.initd \
     file://sshd.initd \
     file://udev.initd \
     file://wpa_supplicant.initd \
@@ -25,6 +26,7 @@ SERVICES = " \
     busybox-syslogd \
     connman \
     dbus \
+    dhcpcd \
     sshd \
     udev \
     wpa_supplicant \
