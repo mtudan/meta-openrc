@@ -1,7 +1,3 @@
-OPENRC_PACKAGES ?= "${PN}"
-
-OPENRC_ADD_DEFAULT ?= ""
-
 openrc_install_script() {
     local svc
 
