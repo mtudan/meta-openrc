@@ -8,27 +8,41 @@ openrc_install_script() {
     done
 }
 
-_add_to_runlevel() {
+_openrc_add_to_runlevel() {
     local runlevel=$1
+    local destdir=$2
     local svc
 
+    if [ "${destdir:0:1}" != "/" ]; then
+        bbfatal "Destination '${destdir}' does not look like a path"
+    fi
+
+    shift
     shift
 
-    [ ! -d ${D}${sysconfdir}/runlevels/${runlevel} ] \
-        && install -d ${D}${sysconfdir}/runlevels/${runlevel}
+    [ ! -d ${destdir}${sysconfdir}/runlevels/${runlevel} ] \
+        && install -d ${destdir}${sysconfdir}/runlevels/${runlevel}
 
     for svc in $*; do
-        ln -s ${OPENRC_INITDIR}/${svc} ${D}${sysconfdir}/runlevels/${runlevel}
+        ln -snf ${OPENRC_INITDIR}/${svc} ${destdir}${sysconfdir}/runlevels/${runlevel}
     done
 
 }
 
+# Add services to the default runlevel
+#
+# @param    - Filesystem root
+# @params   - Services to add to default runlevel
 openrc_add_to_default_runlevel() {
-    _add_to_runlevel default $*
+    _openrc_add_to_runlevel default $*
 }
 
+# Add services to the boot runlevel
+#
+# @param    - Filesystem root
+# @params   - Services to add to boot runlevel
 openrc_add_to_boot_runlevel() {
-    _add_to_runlevel boot $*
+    _openrc_add_to_runlevel boot $*
 }
 
 # Replace the installed inittab with one that uses OpenRC.
