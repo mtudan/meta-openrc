@@ -1,10 +1,12 @@
 openrc_install_script() {
     local svc
+    local path
 
     [ ! -d ${D}${OPENRC_INITDIR} ] && install -d ${D}${OPENRC_INITDIR}
 
-    for svc in $*; do
-        install -m 755 ${svc} ${D}${OPENRC_INITDIR}/${svc%\.initd}
+    for path in $*; do
+        svc=$(basename ${path%\.initd})
+        install -m 755 ${path} ${D}${OPENRC_INITDIR}/${svc}
     done
 }
 
