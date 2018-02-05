@@ -3,11 +3,12 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=2307fb28847883ac2b0b110b1c1f36e0"
 
 PV = "0.20.4"
 SRCREV = "${PV}"
-#PR = "0"
+PR = "1"
 
 SRC_URI = " \
     git://github.com/openrc/openrc.git;nobranch=1 \
     file://librc-sh-respect-alternative-INITDIR.patch \
+    file://volatiles.initd \
 "
 # submitted upstream, https://github.com/OpenRC/openrc/pull/82
 
@@ -22,6 +23,8 @@ EXTRA_OEMAKE = " \
     INITDIR=${OPENRC_INITDIR} \
     CONFDIR=${OPENRC_CONFDIR} \
 "
+
+inherit openrc
 
 openrc_do_patch() {
     # QA[useless-rpaths]: We don't need an rpath to /lib
@@ -45,6 +48,9 @@ do_patch_append() {
 
 do_install() {
     oe_runmake DESTDIR=${D} install
+
+    openrc_install_script ${WORKDIR}/volatiles.initd
+    openrc_add_to_boot_runlevel ${D} volatiles
 }
 
 RDEPENDS_${PN} := " \

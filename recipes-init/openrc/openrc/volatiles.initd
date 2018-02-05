@@ -1,0 +1,30 @@
+#!/sbin/openrc-run
+
+# Create any missing volatile directories on OpenEmbedded
+#
+# Without extra configuration, OpenEmbedded will point /var/tmp and /var/log
+# into /var/volatile which is a tmpfs mount.  This script will look for broken
+# symlinks in /var pointing at /var/volatile and create the directories as
+# necessary.
+
+depend() {
+	need localmount
+	before bootmisc
+}
+
+start() {
+	local broken=$(find /var -type l ! -exec test -e {} \; -print)
+	local l
+	local dest
+
+	for l in ${broken}; do
+		dest=$(readlink ${l})
+		if [ "$(dirname ${dest})" == "volatile" ]; then
+			mkdir /var/${dest};
+		fi
+	done
+}
+
+# vim: noet ft=gentoo-init-d
+
+
