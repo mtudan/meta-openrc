@@ -15,7 +15,7 @@ _openrc_add_to_runlevel() {
     local destdir=$2
     local svc
 
-    if [ "${destdir:0:1}" != "/" ]; then
+    if ! echo ${destdir} | grep -q "^/"; then
         bbfatal "Destination '${destdir}' does not look like a path"
     fi
 
