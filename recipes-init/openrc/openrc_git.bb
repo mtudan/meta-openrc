@@ -1,16 +1,16 @@
 LICENSE = "BSD-2-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=2307fb28847883ac2b0b110b1c1f36e0"
 
-PV = "0.20.4"
+PV = "0.34.11"
 SRCREV = "${PV}"
 PR = "1"
 
 SRC_URI = " \
     git://github.com/openrc/openrc.git;nobranch=1 \
-    file://librc-sh-respect-alternative-INITDIR.patch \
+    file://0001-mk-break-up-long-SED_REPLACE-line.patch \
+    file://0002-fix-alternative-conf-and-init-dir-support.patch \
     file://volatiles.initd \
 "
-# submitted upstream, https://github.com/OpenRC/openrc/pull/82
 
 S = "${WORKDIR}/git"
 
@@ -20,8 +20,8 @@ EXTRA_OEMAKE = " \
     LIBNAME=lib \
     MKTOOLS=no \
     OS=Linux \
-    INITDIR=${OPENRC_INITDIR} \
-    CONFDIR=${OPENRC_CONFDIR} \
+    INITDIRNAME=$(basename ${OPENRC_INITDIR}) \
+    CONFDIRNAME=$(basename ${OPENRC_CONFDIR}) \
 "
 
 inherit openrc
@@ -48,6 +48,9 @@ do_patch_append() {
 
 do_install() {
     oe_runmake DESTDIR=${D} install
+
+    # Example code that requires perl.
+    rm -r ${D}${prefix}/share/${PN}/support/deptree2dot
 
     openrc_install_script ${WORKDIR}/volatiles.initd
     openrc_add_to_boot_runlevel ${D} volatiles
