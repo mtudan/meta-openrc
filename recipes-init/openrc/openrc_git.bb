@@ -3,7 +3,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=2307fb28847883ac2b0b110b1c1f36e0"
 
 PV = "0.34.11"
 SRCREV = "${PV}"
-PR = "1"
+PR = "2"
 
 SRC_URI = " \
     git://github.com/openrc/openrc.git;nobranch=1 \
@@ -69,3 +69,8 @@ FILES_${PN}_append := " \
     ${base_libdir}/rc/* \
 "
 
+inherit update-alternatives
+
+ALTERNATIVE_PRIORITY = "100"
+ALTERNATIVE_${PN} = "start-stop-daemon"
+ALTERNATIVE_LINK_NAME[start-stop-daemon] = "${base_sbindir}/start-stop-daemon"
