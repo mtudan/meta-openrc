@@ -83,8 +83,6 @@ openrc_add_to_boot_runlevel() {
 #             Defaults to ${IMAGE_ROOTFS}.  Note that no consoles are
 #             enabled by default, they must be added by appending to
 #             etc/inittab.
-
-# TODO:  Just use openrc-init with 0.25
 openrc_replace_inittab() {
     local destdir=${1:-${IMAGE_ROOTFS}}
 
@@ -99,24 +97,24 @@ openrc_replace_inittab() {
 		id:3:initdefault:
 
 		# System initialization, mount local filesystems, etc.
-		si::sysinit:/sbin/rc sysinit
+		si::sysinit:/sbin/openrc sysinit
 
 		# Further system initialization, brings up the boot runlevel.
-		rc::bootwait:/sbin/rc boot
+		rc::bootwait:/sbin/openrc boot
 
-		l0:0:wait:/sbin/rc shutdown
+		l0:0:wait:/sbin/openrc shutdown
 		l0s:0:wait:/sbin/halt -dhp
-		l1:1:wait:/sbin/rc single
-		l2:2:wait:/sbin/rc nonetwork
-		l3:3:wait:/sbin/rc default
-		l4:4:wait:/sbin/rc default
-		l5:5:wait:/sbin/rc default
-		l6:6:wait:/sbin/rc reboot
+		l1:1:wait:/sbin/openrc single
+		l2:2:wait:/sbin/openrc nonetwork
+		l3:3:wait:/sbin/openrc default
+		l4:4:wait:/sbin/openrc default
+		l5:5:wait:/sbin/openrc default
+		l6:6:wait:/sbin/openrc reboot
 		l6r:6:wait:/sbin/reboot -d
 		#z6:6:respawn:/sbin/sulogin
 
 		# new-style single-user
-		su0:S:wait:/sbin/rc single
+		su0:S:wait:/sbin/openrc single
 		su1:S:wait:/sbin/sulogin
 
 		# What to do at the "Three Finger Salute".
