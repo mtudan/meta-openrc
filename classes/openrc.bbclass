@@ -40,7 +40,7 @@ _openrc_add_to_runlevel() {
 # solution is to build off of distro features and update file-rdeps to ignore
 # openrc-run, but until then, this works by adding the executable bit back to
 # openrc scripts after file-rdeps has done its thing.
-python do_package_qa_append() {
+python do_package_restore_exec() {
     pkgdest = d.getVar('PKGDEST')
     packages = set((d.getVar('PACKAGES') or '').split())
     initdir = d.getVar('OPENRC_INITDIR')
@@ -60,6 +60,9 @@ python do_package_qa_append() {
             if shebang == '#!/sbin/openrc-run':
                 os.chmod(path, 0o0755)
 }
+addtask do_package_restore_exec after do_package_qa before do_package_write_deb do_package_write_ipk do_package_write_rpm
+do_package_restore_exec[depends] += "virtual/fakeroot-native:do_populate_sysroot"
+do_package_restore_exec[fakeroot] = "1"
 
 # Add services to the default runlevel
 #
