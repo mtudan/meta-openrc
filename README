@@ -1,0 +1,42 @@
+meta-openrc
+================================
+
+Introduction
+-------------------------
+
+This layer adds support for openrc to OpenEmbedded.  As openrc is not a
+first-order init system in OpenEmbedded like sysvinit or systemd, we are
+currently taking a couple of short cuts in order to make maintenance easier.
+
+- Extra openrc scripts are packages in the openrc-scripts package instead of being
+  bbappended to the relevant recipe.
+- In order to live nicely with sysvinit, all openrc scripts are installed to
+  /etc/openrc.d/ by default.
+
+Long term it would be great to have openrc be selectable via DISTRO_FEATURES
+like the other init systems, but this layer has been working well in the
+interim.
+
+Dependencies
+-------------------------
+
+The meta-openrc layer depends on:
+
+	URI: git://git.openembedded.org/openembedded-core
+	layers: meta
+	branch: warrior
+	revision: HEAD
+
+Contributing
+-------------------------
+
+Feel free to to use the github pull request UI or to directly send emails to
+the maintainer(s) using something like:
+
+'git send-email -M -1 --to=jsbronder@cold-front.org.org --subject-prefix=meta-openrc][warrior][PATCH'
+
+Maintenance
+-------------------------
+
+Maintainer: Justin Bronder <jsbronder@cold-front.ort>
+
