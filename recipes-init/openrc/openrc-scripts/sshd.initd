@@ -18,6 +18,7 @@ depend() {
 start_pre() {
 	ssh-keygen -A || return 1
 	[ ! -d /var/run/sshd ] && mkdir -p /var/run/sshd
+	return 0
 }
 
 reload() {
