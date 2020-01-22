@@ -1,9 +1,7 @@
 LICENSE = "BSD-2-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=2307fb28847883ac2b0b110b1c1f36e0"
 
-PV = "0.34.11"
-SRCREV = "${PV}"
-PR = "2"
+SRCREV = "d8e4da5e5d4d77cdd705823aa71990276a872ee1"
 
 SRC_URI = " \
     git://github.com/openrc/openrc.git;nobranch=1 \

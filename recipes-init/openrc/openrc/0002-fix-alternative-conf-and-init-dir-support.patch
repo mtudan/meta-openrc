@@ -1,4 +1,4 @@
-From ce2ed7cbed77d183428ed4eae48543e1a0b2e959 Mon Sep 17 00:00:00 2001
+From 3016c410a7ba85417c83c3468ca36ca6589b624c Mon Sep 17 00:00:00 2001
 From: Justin Bronder <jsbronder@cold-front.org>
 Date: Thu, 15 Feb 2018 17:38:51 -0500
 Subject: [PATCH 2/2] fix alternative conf and init dir support
@@ -23,11 +23,11 @@ Upstream-Status: Submitted https://github.com/OpenRC/openrc/pull/211
  5 files changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/mk/scripts.mk b/mk/scripts.mk
-index eede9b3b..08d88a0e 100644
+index 81cb1e73..75b5d047 100644
 --- a/mk/scripts.mk
 +++ b/mk/scripts.mk
 @@ -22,6 +22,8 @@ _LCL_SED:=		$(shell ${_LCL_SED_SH})
- SED_REPLACE=	-e 's:@SHELL@:${SH}:g'
+ SED_REPLACE=	-e 's:@SHELL@:${SH}:'
  SED_REPLACE+=	-e 's:@LIB@:${LIBNAME}:g'
  SED_REPLACE+=	-e 's:@SYSCONFDIR@:${SYSCONFDIR}:g'
 +SED_REPLACE+=	-e 's:@INITDIRNAME@:${INITDIRNAME}:g'
@@ -36,7 +36,7 @@ index eede9b3b..08d88a0e 100644
  SED_REPLACE+=	-e 's:@PREFIX@:${PREFIX}:g'
  SED_REPLACE+=	-e 's:@BINDIR@:${BINDIR}:g'
 diff --git a/mk/sys.mk b/mk/sys.mk
-index 62793739..f1cbfac1 100644
+index 92bb55ea..7604755e 100644
 --- a/mk/sys.mk
 +++ b/mk/sys.mk
 @@ -32,8 +32,10 @@ LOCAL_PREFIX=		$(UPREFIX)/local
@@ -49,9 +49,9 @@ index 62793739..f1cbfac1 100644
 +CONFDIRNAME?=		conf.d
 +INITDIR=		${SYSCONFDIR}/${INITDIRNAME}
 +CONFDIR=		${SYSCONFDIR}/${CONFDIRNAME}
+ CONFMODE?=		0644
  LOCALDIR?=		${SYSCONFDIR}/local.d
  SYSCTLDIR?=		${SYSCONFDIR}/sysctl.d
- 
 diff --git a/sh/gendepends.sh.in b/sh/gendepends.sh.in
 index 45147e6a..167715d8 100644
 --- a/sh/gendepends.sh.in
@@ -79,7 +79,7 @@ index 08c599ef..2771947f 100644
  SED_CMD+=	-e 's:@BINDIR@:${BINDIR}:g'
  SED_CMD+=	-e 's:@SBINDIR@:${SBINDIR}:g'
 diff --git a/src/librc/rc.h.in b/src/librc/rc.h.in
-index 1f984d52..56352fb9 100644
+index d2e51dc6..febfc8a7 100644
 --- a/src/librc/rc.h.in
 +++ b/src/librc/rc.h.in
 @@ -35,8 +35,8 @@ extern "C" {
@@ -94,5 +94,5 @@ index 1f984d52..56352fb9 100644
  
  #define RC_INIT_FIFO RC_SVCDIR"/init.ctl"
 -- 
-2.13.6
+2.24.1
 
