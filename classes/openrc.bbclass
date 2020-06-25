@@ -11,9 +11,14 @@ openrc_install_script() {
     done
 }
 
-_openrc_add_to_runlevel() {
-    local runlevel=$1
-    local destdir=$2
+# Add services to the specified runlevel
+#
+# @param    - Filesystem root
+# @param    - Runlevel name
+# @params   - Services to add to default runlevel
+openrc_add_to_runlevel() {
+    local destdir=$1
+    local runlevel=$2
     local svc
 
     if ! echo ${destdir} | grep -q "^/"; then
@@ -69,7 +74,9 @@ do_package_restore_exec[fakeroot] = "1"
 # @param    - Filesystem root
 # @params   - Services to add to default runlevel
 openrc_add_to_default_runlevel() {
-    _openrc_add_to_runlevel default $*
+    local dest=$1
+    shift
+    openrc_add_to_runlevel ${dest} default $*
 }
 
 # Add services to the boot runlevel
@@ -77,7 +84,9 @@ openrc_add_to_default_runlevel() {
 # @param    - Filesystem root
 # @params   - Services to add to boot runlevel
 openrc_add_to_boot_runlevel() {
-    _openrc_add_to_runlevel boot $*
+    local dest=$1
+    shift
+    openrc_add_to_runlevel ${dest} boot $*
 }
 
 # Replace the installed inittab with one that uses OpenRC.
