@@ -89,6 +89,30 @@ openrc_add_to_boot_runlevel() {
     openrc_add_to_runlevel ${dest} boot $*
 }
 
+# Stack a runlevel inside another
+#
+# @param    - Filesystem root
+# @param    - Parent runlevel
+# @param    - Runlevel to add to the parent.
+openrc_stack_runlevel() {
+    local destdir=$1
+    local parent=$2
+    local src=$3
+
+    if ! echo ${destdir} | grep -q "^/"; then
+        bbfatal "Destination '${destdir}' does not look like a path"
+    fi
+
+    if [ ! -d ${destdir}${sysconfdir}/runlevels/${src} ]; then
+        bbfatal "Source runlevel '${src}' does not exist"
+    fi
+
+    [ ! -d ${destdir}${sysconfdir}/runlevels/${parent} ] \
+        && install -d ${destdir}${sysconfdir}/runlevels/${parent}
+
+    ln -snf ../${src} ${destdir}${sysconfdir}/runlevels/${parent}/
+}
+
 # Replace the installed inittab with one that uses OpenRC.
 #
 # @param    - Destination dir where /etc/inittab is already installed.
