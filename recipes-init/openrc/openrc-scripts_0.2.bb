@@ -7,6 +7,7 @@ SRC_URI = " \
     file://bluetooth.initd \
     file://busybox-klogd.initd \
     file://busybox-klogd.confd \
+    file://busybox-ntpd.initd \
     file://busybox-syslogd.initd \
     file://busybox-syslogd.confd \
     file://connman.initd \
@@ -25,6 +26,7 @@ SERVICES = " \
     avahi-daemon \
     bluetooth \
     busybox-klogd \
+    busybox-ntpd \
     busybox-syslogd \
     connman \
     dbus \
