@@ -1,0 +1,107 @@
+name: meta-openrc CI
+
+on:
+  push:
+    branches:
+      - master
+      - kirkstone
+  pull_request:
+    branches:
+      - master
+      - kirkstone
+  schedule:
+    - cron: 11 2 * * 0
+
+jobs:
+  build:
+    name: build openrc-image
+    runs-on: ubuntu-20.04
+    timeout-minutes: 720
+    steps:
+      - name: Configure Environment [branch]
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          echo 'OE_BRANCH='${{ github.ref_name }} >> $GITHUB_ENV
+          if [ ${{ github.ref_name }} = "kirkstone" ]; then
+            echo 'SSTATE_REV=4.0' >> $GITHUB_ENV
+          else
+            echo 'SSTATE_REV=4.0.999' >> $GITHUB_ENV
+          fi
+      - name: Configure Environment [pull_request]
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if [ ${{ github.base_ref }} = "kirkstone" ]; then
+            echo 'OE_BRANCH=kirkstone' >> $GITHUB_ENV
+            echo 'SSTATE_REV=4.0' >> $GITHUB_ENV
+          else
+            echo 'OE_BRANCH='${{ github.base_ref}} >> $GITHUB_ENV
+            echo 'SSTATE_REV=4.0.999' >> $GITHUB_ENV
+          fi
+      - name: Install required packages
+        run: |
+          sudo apt-get install diffstat
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: meta-openrc
+      - name: Shared-State Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            build/sstate-cache
+          key: sstate-openrc-${{ env.OE_BRANCH }}-${{ github.sha }}
+          restore-keys: |
+            sstate-openrc-${{ env.OE_BRANCH }}
+            sstate-openrc-
+            sstate-
+      - name: Clone Poky
+        run: git clone -b ${{ env.OE_BRANCH }} git://git.yoctoproject.org/poky
+      - name: Initialize build directory
+        run: |
+          source poky/oe-init-build-env build
+          echo 'INHERIT += "rm_work"' >> conf/local.conf
+          echo 'DISTRO_FEATURES:remove = "alsa bluetooth usbgadget zeroconf 3g nfc x11 opengl ptest wayland vulkan gobject-introspection-data"' >> conf/local.conf
+          echo 'BB_SIGNATURE_HANDLER = "OEEquivHash"' >> conf/local.conf
+          echo 'SSTATE_MIRRORS += "file://.* http://sstate.yoctoproject.org/dev/${{ env.SSTATE_REV }}/PATH;downloadfilename=PATH"' >> conf/local.conf
+          echo 'BB_HASHSERVE = "auto"' >> conf/local.conf
+          echo 'BB_HASHSERVE_UPSTREAM = "typhoon.yocto.io:8687"' >> conf/local.conf
+          echo 'DISTRO_FEATURES += "openrc"' >> conf/local.conf
+          bitbake-layers add-layer ../meta-openrc
+      - name: Build operc image
+        run: |
+          source poky/oe-init-build-env build
+          bitbake openrc-image
+      - name: Prune Shared-State Cache
+        run: |
+          source poky/oe-init-build-env build
+          du -sh sstate-cache
+          sstate-cache-management.sh --yes --cache-dir=sstate-cache --remove-duplicated
+          sstate-cache-management.sh --yes --cache-dir=sstate-cache --stamps-dir=tmp/stamps
+          du -sh sstate-cache
+
+  yocto-check-layer:
+    name: yocto-check-layer
+    runs-on: ubuntu-20.04
+    timeout-minutes: 720
+    steps:
+      - name: Configure Environment [branch]
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          echo 'OE_BRANCH='${{ github.ref_name }} >> $GITHUB_ENV
+      - name: Configure Environment [pull_request]
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo 'OE_BRANCH='${{ github.base_ref}} >> $GITHUB_ENV
+      - name: Install required packages
+        run: |
+          sudo apt-get install diffstat
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: meta-openrc
+      - name: Clone Poky
+        run: git clone -b ${{ env.OE_BRANCH }} git://git.yoctoproject.org/poky
+      - name: Check layer
+        run: |
+          source poky/oe-init-build-env build
+          yocto-check-layer --without-software-layer-signature-check ../meta-openrc
