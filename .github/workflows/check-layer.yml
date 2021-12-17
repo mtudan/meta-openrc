@@ -1,0 +1,49 @@
+name: yocto-check-layer
+
+on:
+  push:
+    branches:
+      - ci
+      - master
+      - kirkstone
+  pull_request:
+    branches:
+      - ci
+      - master
+      - kirkstone
+
+jobs:
+  build:
+    name: yocto-check-layer
+    runs-on: ubuntu-20.04
+    timeout-minutes: 720
+    steps:
+      - name: Configure Environment [branch]
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          if [ ${{ github.ref_name }} = "ci" ]; then
+            echo 'OE_BRANCH=kirkstone' >> $GITHUB_ENV
+          else
+            echo 'OE_BRANCH='${{ github.ref_name }} >> $GITHUB_ENV
+          fi
+      - name: Configure Environment [pull_request]
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if [ ${{ github.ref_name }} = "ci" ]; then
+            echo 'OE_BRANCH=kirkstone' >> $GITHUB_ENV
+          else
+            echo 'OE_BRANCH='${{ github.base_ref}} >> $GITHUB_ENV
+          fi
+      - name: Install required packages
+        run: |
+          sudo apt-get install diffstat
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: meta-openrc
+      - name: Clone Poky
+        run: git clone -b ${{ env.OE_BRANCH }} git://git.yoctoproject.org/poky
+      - name: Check layer
+        run: |
+          source poky/oe-init-build-env build
+          yocto-check-layer --without-software-layer-signature-check ../meta-openrc
