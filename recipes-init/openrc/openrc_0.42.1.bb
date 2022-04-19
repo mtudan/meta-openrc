@@ -4,7 +4,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=2307fb28847883ac2b0b110b1c1f36e0"
 SRCREV = "d8e4da5e5d4d77cdd705823aa71990276a872ee1"
 
 SRC_URI = " \
-    git://github.com/openrc/openrc.git;nobranch=1 \
+    git://github.com/openrc/openrc.git;nobranch=1;protocol=https \
     file://0001-mk-break-up-long-SED_REPLACE-line.patch \
     file://0002-fix-alternative-conf-and-init-dir-support.patch \
     file://volatiles.initd \
