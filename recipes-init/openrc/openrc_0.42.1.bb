@@ -22,7 +22,7 @@ EXTRA_OEMAKE = " \
     CONFDIRNAME=$(basename ${OPENRC_CONFDIR}) \
 "
 
-inherit openrc
+inherit openrc openrc-image
 
 openrc_do_patch() {
     # QA[useless-rpaths]: We don't need an rpath to /lib
