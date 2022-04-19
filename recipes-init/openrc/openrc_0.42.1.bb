@@ -40,7 +40,7 @@ openrc_do_patch() {
         ${S}/runlevels/Makefile
 }
 
-do_patch_append() {
+do_patch:append() {
     bb.build.exec_func('openrc_do_patch', d)
 }
 
@@ -54,21 +54,21 @@ do_install() {
     openrc_add_to_boot_runlevel ${D} volatiles
 }
 
-RDEPENDS_${PN} := " \
+RDEPENDS:${PN} := " \
     sysvinit \
 "
 
-FILES_${PN}-dbg_append := " \
+FILES:${PN}-dbg:append := " \
     ${base_libdir}/rc/bin/.debug \
     ${base_libdir}/rc/sbin/.debug \
 "
 
-FILES_${PN}_append := " \
+FILES:${PN}:append := " \
     ${base_libdir}/rc/* \
 "
 
 inherit update-alternatives
 
 ALTERNATIVE_PRIORITY = "100"
-ALTERNATIVE_${PN} = "start-stop-daemon"
+ALTERNATIVE:${PN} = "start-stop-daemon"
 ALTERNATIVE_LINK_NAME[start-stop-daemon] = "${base_sbindir}/start-stop-daemon"

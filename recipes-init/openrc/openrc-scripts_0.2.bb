@@ -62,5 +62,5 @@ do_install() {
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-RDEPENDS_${PN} = "openrc"
+RDEPENDS:${PN} = "openrc"
 

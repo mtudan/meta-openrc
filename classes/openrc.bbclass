@@ -6,7 +6,7 @@ openrc_install_script() {
 
     for path in $*; do
         svc=$(basename ${path%\.initd})
-        # Not executable, see do_package_qa_append
+        # Not executable, see do_package_qa:append
         install -m 644 ${path} ${D}${OPENRC_INITDIR}/${svc}
     done
 }
