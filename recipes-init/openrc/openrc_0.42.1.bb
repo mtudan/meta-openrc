@@ -7,6 +7,7 @@ SRC_URI = " \
     git://github.com/openrc/openrc.git;nobranch=1;protocol=https \
     file://0001-mk-break-up-long-SED_REPLACE-line.patch \
     file://0002-fix-alternative-conf-and-init-dir-support.patch \
+    file://0001-src-rc-rc-logger.h-fix-build-failure-against-gcc-10.patch \
     file://volatiles.initd \
 "
 
