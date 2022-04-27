@@ -1,0 +1,21 @@
+#!/sbin/openrc-run
+
+extra_started_commands="reload"
+
+command="/usr/sbin/acpid"
+command_args="-f ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/acpid.pid"
+
+depend() {
+	need localmount
+	use logger
+}
+
+reload() {
+	ebegin "Reloading acpid configuration"
+	start-stop-daemon --exec $command --signal HUP --pidfile ${pidfile}
+	eend $?
+}
+
+# vim: noet ft=gentoo-init-d
