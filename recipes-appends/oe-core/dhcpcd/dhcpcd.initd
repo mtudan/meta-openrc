@@ -1,0 +1,16 @@
+#!/sbin/openrc-run
+
+command=/sbin/dhcpcd
+pidfile=/run/dhcpcd/pid
+command_args="--quiet --background ${COMMAND_ARGS}"
+name="DHCP Client Daemon"
+
+depend() {
+    provide net
+    need localmount
+    use logger network
+    after bootmisc modules
+    before dns
+}
+
+# vim: noet ft=gentoo-init-d
