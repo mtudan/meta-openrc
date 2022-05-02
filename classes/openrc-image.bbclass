@@ -1,71 +1,49 @@
-# Add services to the specified runlevel
-#
-# @param    - Filesystem root
-# @param    - Runlevel name
-# @params   - Services to add to default runlevel
-openrc_add_to_runlevel() {
-    local destdir=$1
-    local runlevel=$2
+# Define additional services that should be enabled for given runlevels as a
+# list of whitespace-separated [runlevel]:[service].
+OPENRC_SERVICES ?= " \
+    ${@bb.utils.contains('IMAGE_FEATURES', 'ssh-server-dropbear', 'default:dropbear', '', d)} \
+    ${@bb.utils.contains('IMAGE_FEATURES', 'ssh-server-openssh', 'default:sshd', '', d)} \
+"
+
+# Define stacked runlevels as a whitespace-separated
+# [base runlevel]:[stacked runlevel]
+OPENRC_STACKED_RUNLEVELS ?= ""
+
+ROOTFS_POSTPROCESS_COMMAND += "${@bb.utils.contains('DISTRO_FEATURES', 'openrc', 'openrc_stack_runlevels; openrc_add_services; ', '', d)}"
+
+openrc_stack_runlevels() {
+    local stack
+    local parent
+    local child
+
+    for stack in ${OPENRC_STACKED_RUNLEVELS}; do
+        parent=${stack%%:*}
+        child=${stack##*:}
+
+        [ ! -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${child} ] \
+            && install -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${child}
+
+        [ ! -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${parent} ] \
+            && install -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${parent}
+
+        ln -snf ../${child} ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${parent}/
+    done
+}
+
+openrc_add_services() {
+    local pair
+    local runlevel
     local svc
 
-    if ! echo ${destdir} | grep -q "^/"; then
-        bbfatal "Destination '${destdir}' does not look like a path"
-    fi
+    for pair in ${OPENRC_SERVICES}; do
+        runlevel=${pair%%:*}
+        svc=${pair##*:}
 
-    shift
-    shift
+        [ ! -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${runlevel} ] \
+            && install -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${runlevel}
 
-    [ ! -d ${destdir}${sysconfdir}/runlevels/${runlevel} ] \
-        && install -d ${destdir}${sysconfdir}/runlevels/${runlevel}
-
-    for svc in $*; do
-        ln -snf ${OPENRC_INITDIR}/${svc} ${destdir}${sysconfdir}/runlevels/${runlevel}
+        ln -snf ${OPENRC_INITDIR}/${svc} ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${runlevel}
     done
-
-}
-
-# Add services to the default runlevel
-#
-# @param    - Filesystem root
-# @params   - Services to add to default runlevel
-openrc_add_to_default_runlevel() {
-    local dest=$1
-    shift
-    openrc_add_to_runlevel ${dest} default $*
-}
-
-# Add services to the boot runlevel
-#
-# @param    - Filesystem root
-# @params   - Services to add to boot runlevel
-openrc_add_to_boot_runlevel() {
-    local dest=$1
-    shift
-    openrc_add_to_runlevel ${dest} boot $*
-}
-
-# Stack a runlevel inside another
-#
-# @param    - Filesystem root
-# @param    - Parent runlevel
-# @param    - Runlevel to add to the parent.
-openrc_stack_runlevel() {
-    local destdir=$1
-    local parent=$2
-    local src=$3
-
-    if ! echo ${destdir} | grep -q "^/"; then
-        bbfatal "Destination '${destdir}' does not look like a path"
-    fi
-
-    if [ ! -d ${destdir}${sysconfdir}/runlevels/${src} ]; then
-        bbfatal "Source runlevel '${src}' does not exist"
-    fi
-
-    [ ! -d ${destdir}${sysconfdir}/runlevels/${parent} ] \
-        && install -d ${destdir}${sysconfdir}/runlevels/${parent}
-
-    ln -snf ../${src} ${destdir}${sysconfdir}/runlevels/${parent}/
 }
 
 # Like oe-core/meta/classes/rootfs-postcommands, allow dropbear to accept
