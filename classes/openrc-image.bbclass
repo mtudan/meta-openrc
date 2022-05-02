@@ -68,58 +68,6 @@ openrc_stack_runlevel() {
     ln -snf ../${src} ${destdir}${sysconfdir}/runlevels/${parent}/
 }
 
-# Replace the installed inittab with one that uses OpenRC.
-#
-# @param    - Destination dir where /etc/inittab is already installed.
-#             Defaults to ${IMAGE_ROOTFS}.  Note that no consoles are
-#             enabled by default, they must be added by appending to
-#             etc/inittab.
-openrc_replace_inittab() {
-    local destdir=${1:-${IMAGE_ROOTFS}}
-
-    if [ -z "${destdir}" ]; then
-        bbfatal "No destination specified for inittab replacement and not build an image"
-    elif [ ! -s "${destdir}${sysconfdir}/inittab" ]; then
-        bbwarn "No inittab installed"
-    fi
-
-    cat <<-EOF > ${destdir}${sysconfdir}/inittab
-		# Default runlevel.
-		id:3:initdefault:
-
-		# System initialization, mount local filesystems, etc.
-		si::sysinit:/sbin/openrc sysinit
-
-		# Further system initialization, brings up the boot runlevel.
-		rc::bootwait:/sbin/openrc boot
-
-		l0:0:wait:/sbin/openrc shutdown
-		l0s:0:wait:/sbin/halt -dhp
-		l1:1:wait:/sbin/openrc single
-		l2:2:wait:/sbin/openrc nonetwork
-		l3:3:wait:/sbin/openrc default
-		l4:4:wait:/sbin/openrc default
-		l5:5:wait:/sbin/openrc default
-		l6:6:wait:/sbin/openrc reboot
-		l6r:6:wait:/sbin/reboot -d
-		#z6:6:respawn:/sbin/sulogin
-
-		# new-style single-user
-		su0:S:wait:/sbin/openrc single
-		su1:S:wait:/sbin/sulogin
-
-		# What to do at the "Three Finger Salute".
-		ca:12345:ctrlaltdel:/sbin/shutdown -r now
-
-		# TERMINALS
-		# c1:12345:respawn:/sbin/agetty 38400 tty1 linux
-
-		# SERIAL CONSOLES
-		#s0:12345:respawn:/sbin/agetty -8 --autologin root --login-pause -L 115200 ttyS0 xterm
-		#s1:12345:respawn:/sbin/agetty -L 115200 ttyS1 vt100
-	EOF
-}
-
 # Like oe-core/meta/classes/rootfs-postcommands, allow dropbear to accept
 # logins from accounts with an empty password string if debug-tweaks or
 # allow-empty-password is enabled.
