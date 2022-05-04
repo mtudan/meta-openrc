@@ -1,0 +1,13 @@
+#!/sbin/openrc-run
+
+depend() {
+	after urandom
+	provide entropy
+}
+
+pidfile="/run/rngd.pid"
+command_args="-b -p ${pidfile} ${COMMAND_ARGS}"
+command="/usr/sbin/rngd"
+start_stop_daemon_args="--wait 5"
+
+# vim: noet ft=gentoo-init-d
