@@ -1,0 +1,21 @@
+#!/sbin/openrc-run
+
+command="/usr/sbin/syslogd"
+command_args="-F ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/sysklogd.pid"
+extra_started_commands="reload"
+
+depend() {
+	need clock hostname localmount
+	before net
+	provide logger
+}
+
+reload() {
+	ebegin "Reloading configuration"
+	start-stop-daemon --signal HUP --pidfile ${pidfile}
+	eend $?
+}
+
+# vim: noet ft=gentoo-init-d
