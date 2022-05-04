@@ -1,0 +1,11 @@
+#!/sbin/openrc-run
+
+depend() {
+	need localmount
+	use logger
+}
+
+command_args="${COMMAND_ARGS}"
+command="/usr/sbin/wd_keepalive"
+
+# vim: noet ft=gentoo-init-d
