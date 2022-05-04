@@ -1,0 +1,22 @@
+#!/sbin/openrc-run
+
+command="/usr/sbin/lighttpd"
+command_args="-D ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/lighttpd.pid"
+extra_started_commands="reload"
+
+depend() {
+	need net
+	use dns logger netmount
+	after firewall
+}
+
+reload() {
+	ebegin "Reloading configuration"
+	start-stop-daemon --signal HUP --pidfile ${pidfile}
+	eend $?
+}
+
+
+# vim: noet ft=gentoo-init-d
