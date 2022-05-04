@@ -1,0 +1,14 @@
+#!/sbin/openrc-run
+
+depend() {
+	need localmount
+	after bootmisc
+}
+
+start() {
+	ebegin "Running postinstall scripts"
+	/usr/sbin/run-postinsts
+	eend $?
+}
+
+# vim: noet ft=gentoo-init-d
