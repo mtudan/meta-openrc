@@ -1,0 +1,24 @@
+#!/sbin/openrc-run
+
+depend() {
+	need localmount
+	after bootmisc modules coldplug hotplug
+}
+
+start() {
+	if [ ! -e @LOCALSTATEDIR@/lib/alsa/asound.state ]; then
+		return
+	fi
+
+	ebegin "Restoring ALSA mixer settings"
+	alsactl -f @LOCALSTATEDIR@/lib/alsa/asound.state restore
+	eend $?
+}
+
+stop() {
+	ebegin "Saving ALSA mixer settings"
+	alsactl -f @LOCALSTATEDIR@/lib/alsa/asound.state store
+	eend $?
+}
+
+# vim: noet ft=gentoo-init-d
