@@ -1,0 +1,13 @@
+#!/sbin/openrc-run
+
+command="/usr/bin/distccd"
+command_args="--no-detach --daemon ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/distcc.pid"
+
+depend() {
+	need net
+	use avahi-daemon
+}
+
+# vim: noet ft=gentoo-init-d

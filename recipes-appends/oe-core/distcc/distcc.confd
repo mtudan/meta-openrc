@@ -1,0 +1,2 @@
+# Extra arguments to pass to the daemon
+COMMAND_ARGS="--allow 127.0.0.1"
