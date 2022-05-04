@@ -1,0 +1,14 @@
+#!/sbin/openrc-run
+
+depend() {
+	after *
+	use localmount
+}
+
+start() {
+	ebegin "Signaling end of boot to bootchart"
+	/sbin/bootchartd stop
+	eend $?
+}
+
+# vim: noet ft=gentoo-init-d
