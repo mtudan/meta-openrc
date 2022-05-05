@@ -1,0 +1,15 @@
+#!/sbin/openrc-run
+
+command="/usr/sbin/rpcbind"
+command_args="-f ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/rpcbind.pid"
+
+depend() {
+	use net
+	before xinetd
+	after firewall
+	provide portmap
+}
+
+# vim: noet ft=gentoo-init-d
