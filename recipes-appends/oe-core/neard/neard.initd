@@ -1,0 +1,12 @@
+#!/sbin/openrc-run
+
+command="/usr/libexec/nfc/neard"
+command_args="--nodaemon ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/neard.pid"
+
+depend() {
+	need dbus
+}
+
+# vim: noet ft=gentoo-init-d
