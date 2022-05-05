@@ -1,0 +1,12 @@
+#!/sbin/openrc-run
+
+depend() {
+	use net
+}
+
+command_args="-f ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/busybox-inetd.pid"
+command="/usr/sbin/inetd"
+
+# vim: noet ft=gentoo-init-d
