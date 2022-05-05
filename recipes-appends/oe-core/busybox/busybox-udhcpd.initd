@@ -1,0 +1,16 @@
+#!/sbin/openrc-run
+
+depend() {
+    provide net
+    need localmount
+    use logger network
+    after bootmisc modules
+    before dns
+}
+
+command_args="-f ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/busybox-udhcpd.pid"
+command="/usr/sbin/udhcpd"
+
+# vim: noet ft=gentoo-init-d
