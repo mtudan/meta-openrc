@@ -1,0 +1,38 @@
+#!/sbin/openrc-run
+
+depend() {
+	need root devfs
+	use modules
+}
+
+start() {
+	if [ ! -e /dev/fb0 ]; then
+		return 0
+	fi
+
+	local cmdline
+	local cmd
+	read cmdline < /proc/cmdline
+	for cmd in ${cmdline}; do
+		if [ "${cmd}" = "psplash=false" ]; then
+			return 0
+		fi
+	done
+
+	local psplash_fifo_dir=$(source /etc/default/rcS; echo ${PSPLASH_FIFO_DIR})
+	[ -d "${psplash_fifo_dir}" ] || mkdir -p ${psplash_fifo_dir}
+	if ! mountpoint -q ${psplash_fifo_dir}; then
+		mount tmpfs -t tmpfs ${psplash_fifo_dir} -o,size=40k
+	fi
+
+	local rotation=0
+	if [ -e /etc/rotation ]; then
+		read rotation < /etc/rotation
+	fi
+
+	PSPLASH_FIFO_DIR=${psplash_fifo_dir} /usr/bin/psplash --angle ${rotation} ${COMMAND_ARGS}
+}
+
+
+
+# vim: noet ft=gentoo-init-d
