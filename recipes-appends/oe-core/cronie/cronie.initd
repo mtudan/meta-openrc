@@ -1,0 +1,14 @@
+#!/sbin/openrc-run
+
+command="/usr/sbin/crond"
+command_args="-f ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/cronie.pid"
+
+depend() {
+	use clock logger
+	need localmount
+	provide cron
+}
+
+# vim: noet ft=gentoo-init-d
