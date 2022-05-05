@@ -1,0 +1,18 @@
+#!/sbin/openrc-run
+
+command="/usr/sbin/xinetd"
+pidfile="/var/run/xinetd.pid"
+command_args="-pidfile ${pidfile} ${COMMAND_ARGS}"
+extra_started_commands="reload"
+
+depend() {
+	use net
+}
+
+reload() {
+	ebegin "Reloading configuration"
+	start-stop-daemon --signal HUP --pidfile ${pidfile}
+	eend $?
+}
+
+# vim: noet ft=gentoo-init-d
