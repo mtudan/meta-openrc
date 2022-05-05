@@ -1,0 +1,4 @@
+CONFIG_FILE="/etc/kea/kea-dhcp4.conf"
+
+# Extra arguments to pass to the daemon
+COMMAND_ARGS=""

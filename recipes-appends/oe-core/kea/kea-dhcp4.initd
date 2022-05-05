@@ -1,0 +1,16 @@
+#!/sbin/openrc-run
+
+command="/usr/sbin/kea-dhcp4"
+command_args="-c ${CONFIG_FILE} ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/kea-dhcp4.pid"
+
+depend() {
+	use net
+}
+
+start_pre() {
+	checkpath -q -d /var/run/kea
+}
+
+# vim: noet ft=gentoo-init-d
