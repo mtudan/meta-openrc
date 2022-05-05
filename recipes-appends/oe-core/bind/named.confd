@@ -1,0 +1,4 @@
+NAMED_PIDFILE="/var/run/named/named.pid"
+
+# Extra arguments to pass to the daemon
+COMMAND_ARGS=""

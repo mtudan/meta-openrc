@@ -1,0 +1,49 @@
+#!/sbin/openrc-run
+
+extra_started_commands="reload"
+
+depend() {
+	need net
+	after firewall entropy
+	use logger
+	provide dns
+}
+
+start_pre() {
+	/usr/sbin/generate-rndc-key.sh
+}
+
+start() {
+	ebegin "Starting named"
+
+	local piddir="${NAMED_PIDFILE%/*}"
+	if [ ! -d "${piddir}" ]; then
+		checkpath -q -d -o root:bind -m 0770 "${piddir}" || {
+			eend 1
+			return 1
+		}
+	fi
+
+	start-stop-daemon \
+		--start \
+		--pidfile ${NAMED_PIDFILE} \
+		--exec /usr/sbin/named \
+		-- \
+			-u bind \
+			${COMMAND_ARGS}
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping named"
+	start-stop-daemon --stop --quiet --pidfile ${NAMED_PIDFILE}
+	eend $?
+}
+
+reload() {
+	ebegin "Reloading named"
+	rndc reload
+	eend $?
+}
+
+# vim: noet ft=gentoo-init-d
