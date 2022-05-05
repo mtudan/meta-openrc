@@ -1,0 +1,12 @@
+#!/sbin/openrc-run
+
+command="/usr/sbin/ofonod"
+command_args="--nodetach ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/ofonod.pid"
+
+depend() {
+	need dbus
+}
+
+# vim: noet ft=gentoo-init-d
