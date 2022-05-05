@@ -1,0 +1,14 @@
+#!/sbin/openrc-run
+
+depend() {
+	need net
+	use dns logger netmount
+	after firewall
+}
+
+command="/usr/sbin/httpd"
+command_args="-f ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/busybox-httpd.pid"
+
+# vim: noet ft=gentoo-init-d

@@ -3,6 +3,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 SRC_URI += " \
     file://busybox-klogd.confd \
     file://busybox-klogd.initd \
+    file://busybox-httpd.confd \
+    file://busybox-httpd.initd \
     file://busybox-ntpd.confd \
     file://busybox-ntpd.initd \
     file://busybox-syslogd.confd \
@@ -11,7 +13,7 @@ SRC_URI += " \
 
 inherit openrc
 
-OPENRC_PACKAGES = "busybox busybox-syslog"
+OPENRC_PACKAGES = "busybox busybox-httpd busybox-syslog"
 OPENRC_SERVICES = "busybox-klogd busybox-ntpd"
 OPENRC_SERVICES:${PN}-syslog = "busybox-syslogd"
 
@@ -21,7 +23,7 @@ do_install:append() {
     fi
 
     local svc
-    for svc in klogd ntpd syslogd; do
+    for svc in klogd httpd ntpd syslogd; do
         openrc_install_initd ${WORKDIR}/busybox-${svc}.initd
         openrc_install_confd ${WORKDIR}/busybox-${svc}.confd
     done
