@@ -1,0 +1,13 @@
+#!/sbin/openrc-run
+
+depend() {
+	need sysfs dev-mount
+	before checkfs fsck
+}
+
+command_args="-df ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/busybox-mdev.pid"
+command="/sbin/mdev"
+
+# vim: noet ft=gentoo-init-d
