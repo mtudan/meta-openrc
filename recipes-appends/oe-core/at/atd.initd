@@ -1,0 +1,13 @@
+#!/sbin/openrc-run
+
+command="/usr/sbin/atd"
+command_args="-f ${COMMAND_ARGS}"
+command_background="true"
+pidfile="/var/run/atd.pid"
+
+depend() {
+	need clock
+	use logger
+}
+
+# vim: noet ft=gentoo-init-d
