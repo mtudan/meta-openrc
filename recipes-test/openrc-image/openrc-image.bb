@@ -21,7 +21,7 @@ OPENRC_SERVICES += " \
 "
 
 boot_to_logging() {
-    sed -i '/^l5/s,default,logging,' ${IMAGE_ROOTFS}${sysconfdir}/inittab
+    sed -i '/^l[345]/s,default,logging,' ${IMAGE_ROOTFS}${sysconfdir}/inittab
 }
 ROOTFS_POSTPROCESS_COMMAND += "${@bb.utils.contains('DISTRO_FEATURES', 'openrc', 'boot_to_logging; ', '', d)}"
 
