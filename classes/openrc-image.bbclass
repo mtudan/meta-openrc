@@ -6,27 +6,27 @@ OPENRC_SERVICES ?= " \
 "
 
 # Define stacked runlevels as a whitespace-separated
-# [base runlevel]:[stacked runlevel]
+# [stacked runlevel]:[base runlevel]
 OPENRC_STACKED_RUNLEVELS ?= ""
 
 ROOTFS_POSTPROCESS_COMMAND += "${@bb.utils.contains('DISTRO_FEATURES', 'openrc', 'openrc_stack_runlevels; openrc_add_services; ', '', d)}"
 
 openrc_stack_runlevels() {
     local stack
-    local parent
-    local child
+    local base
+    local stacked
 
     for stack in ${OPENRC_STACKED_RUNLEVELS}; do
-        parent=${stack%%:*}
-        child=${stack##*:}
+        base=${stack##*:}
+        stacked=${stack%%:*}
 
-        [ ! -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${child} ] \
-            && install -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${child}
+        [ ! -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${stacked} ] \
+            && install -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${stacked}
 
-        [ ! -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${parent} ] \
-            && install -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${parent}
+        [ ! -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${base} ] \
+            && install -d ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${base}
 
-        ln -snf ../${child} ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${parent}/
+        ln -snf ../${base} ${IMAGE_ROOTFS}${sysconfdir}/runlevels/${stacked}/
     done
 }
 

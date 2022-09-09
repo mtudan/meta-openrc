@@ -13,7 +13,7 @@ inherit core-image openrc-image
 
 # The logging runlevel is just an example that serves to make sure that
 # runlevel stacking and adding of services is functioning correctly.
-OPENRC_STACKED_RUNLEVELS += "default:logging"
+OPENRC_STACKED_RUNLEVELS += "logging:default"
 OPENRC_SERVICES += " \
     default:udev \
     logging:busybox-klogd \
