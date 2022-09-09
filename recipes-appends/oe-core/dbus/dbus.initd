@@ -5,7 +5,7 @@ depend() {
 	after bootmisc
 }
 
-command_args="---system ${COMMAND_ARGS}"
+command_args="--system ${COMMAND_ARGS}"
 command="/usr/bin/dbus-daemon"
 pidfile="/var/run/dbus/pid"
 extra_started_commands="reload"
