@@ -15,7 +15,8 @@ inherit core-image openrc-image
 # runlevel stacking and adding of services is functioning correctly.
 OPENRC_STACKED_RUNLEVELS += "logging:default"
 OPENRC_SERVICES += " \
-    default:udev \
+    sysinit:udev-trigger \
+    default:udev-settle \
     logging:busybox-klogd \
     logging:busybox-syslogd \
 "
